@@ -12,7 +12,7 @@ export const taskService = {
       }
 
       const params = {
-        fields: [
+fields: [
           {"field": {"Name": "Id"}},
           {"field": {"Name": "Name"}},
           {"field": {"Name": "Tags"}},
@@ -21,7 +21,8 @@ export const taskService = {
           {"field": {"Name": "description_c"}},
           {"field": {"Name": "priority_c"}},
           {"field": {"Name": "status_c"}},
-          {"field": {"Name": "completed_at_c"}}
+          {"field": {"Name": "completed_at_c"}},
+          {"field": {"Name": "files_c"}}
         ],
         orderBy: [{"fieldName": "CreatedOn", "sorttype": "DESC"}]
       }
@@ -58,7 +59,8 @@ export const taskService = {
           {"field": {"Name": "description_c"}},
           {"field": {"Name": "priority_c"}},
           {"field": {"Name": "status_c"}},
-          {"field": {"Name": "completed_at_c"}}
+{"field": {"Name": "completed_at_c"}},
+          {"field": {"Name": "files_c"}}
         ]
       }
 
@@ -82,7 +84,7 @@ export const taskService = {
         throw new Error("ApperClient not initialized")
       }
 
-      const params = {
+const params = {
         records: [{
           Name: taskData.title_c || taskData.title || "Untitled Task",
           Tags: taskData.Tags || "",
@@ -90,7 +92,8 @@ export const taskService = {
           description_c: taskData.description_c || taskData.description || "",
           priority_c: taskData.priority_c || taskData.priority || "medium",
           status_c: taskData.status_c || taskData.status || "active",
-          completed_at_c: taskData.completed_at_c || taskData.completedAt || null
+          completed_at_c: taskData.completed_at_c || taskData.completedAt || null,
+          files_c: taskData.files_c || null
         }]
       }
 
@@ -133,7 +136,7 @@ export const taskService = {
         throw new Error("ApperClient not initialized")
       }
 
-      const updateData = {
+const updateData = {
         Id: parseInt(id)
       }
 
@@ -157,7 +160,9 @@ export const taskService = {
       if (updates.Tags !== undefined) {
         updateData.Tags = updates.Tags
       }
-
+      if (updates.files_c !== undefined) {
+        updateData.files_c = updates.files_c
+      }
       const params = {
         records: [updateData]
       }

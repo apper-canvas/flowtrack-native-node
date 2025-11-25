@@ -1,15 +1,17 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
+import { toast } from "react-toastify"
 import Button from "@/components/atoms/Button"
 import Input from "@/components/atoms/Input"
-import Select from "@/components/atoms/Select"
 import Textarea from "@/components/atoms/Textarea"
-import ApperIcon from "@/components/ApperIcon"
-
+import Select from "@/components/atoms/Select"
+import ApperFileFieldComponent from "@/components/atoms/ApperFileFieldComponent"
+import { ApperIcon } from "@/components"
 const TaskForm = ({ onAddTask }) => {
-  const [title, setTitle] = useState("")
+const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [priority, setPriority] = useState("medium")
+  const [uploadedFiles, setUploadedFiles] = useState([])
   const [errors, setErrors] = useState({})
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -34,18 +36,32 @@ const TaskForm = ({ onAddTask }) => {
     setIsSubmitting(true)
     
     try {
-await onAddTask({
+// Get files from SDK
+      let files = [];
+      try {
+        if (window.ApperSDK && window.ApperSDK.ApperFileUploader) {
+          const { ApperFileUploader } = window.ApperSDK;
+          files = ApperFileUploader.FileField.getFiles('task_files') || [];
+        }
+      } catch (error) {
+        console.error('Error getting files:', error);
+        files = uploadedFiles; // Fallback to uploadedFiles if SDK fails
+      }
+
+      await onAddTask({
         title_c: title.trim(),
         description_c: description.trim(),
         priority_c: priority,
         status_c: "active",
-        completed_at_c: null
+        completed_at_c: null,
+        files: files
       })
       
       // Reset form
-      setTitle("")
+setTitle("")
       setDescription("")
       setPriority("medium")
+      setUploadedFiles([])
       setErrors({})
     } catch (error) {
       console.error("Error adding task:", error)
@@ -145,6 +161,30 @@ await onAddTask({
                 />
               </div>
             </div>
+</div>
+
+          {/* File Upload Section */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-slate-700">
+              Attach Files
+            </label>
+            <div className="border-2 border-dashed border-slate-200 rounded-lg p-4 bg-slate-50">
+              <ApperFileFieldComponent
+                elementId="task_files"
+                config={{
+                  fieldKey: 'task_files',
+                  fieldName: 'files_c',
+                  tableName: 'files_c',
+                  apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+                  apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY,
+                  existingFiles: [],
+                  fileCount: 0
+                }}
+              />
+            </div>
+            <p className="text-xs text-slate-500">
+              You can attach multiple files to your task
+            </p>
           </div>
 
           <div className="flex justify-end pt-4">

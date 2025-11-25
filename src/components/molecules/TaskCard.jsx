@@ -130,8 +130,16 @@ const isCompleted = (task.status_c || task.status) === "completed"
         </div>
         
 <Badge variant={getPriorityColor(task.priority_c || task.priority)}>
-          {task.priority}
+          {task.priority_c || task.priority}
         </Badge>
+        
+        {/* File attachment indicator */}
+        {task.files_c && (
+          <div className="flex items-center gap-1 text-xs text-slate-500">
+            <ApperIcon name="Paperclip" size={12} />
+            <span>Files</span>
+          </div>
+        )}
       </div>
 
       <div className="flex items-center justify-between pt-2 border-t border-slate-100">
