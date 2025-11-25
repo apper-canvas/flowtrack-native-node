@@ -47,7 +47,7 @@ const [title, setTitle] = useState("")
         console.error('Error getting files:', error);
         files = uploadedFiles; // Fallback to uploadedFiles if SDK fails
       }
-
+      console.log("files:", files)
       await onAddTask({
         title_c: title.trim(),
         description_c: description.trim(),
